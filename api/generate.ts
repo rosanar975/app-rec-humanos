@@ -22,7 +22,6 @@ export default async function handler(
       return res.status(400).json({ error: "Prompt requerido" });
     }
 
-    // ✅ leer system prompt
     const systemPrompt = fs.readFileSync(
       path.join(process.cwd(), "prompts", "system.txt"),
       "utf-8"
@@ -30,19 +29,18 @@ export default async function handler(
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // ✅ modelo correcto
+    // ✅ MODELO QUE SÍ EXISTE EN v1beta
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "models/gemini-1.0-pro",
       systemInstruction: systemPrompt,
     });
 
-    // ✅ SOLO texto plano
     const result = await model.generateContent(prompt);
     const text = result.response.text();
 
     return res.status(200).json({ text });
   } catch (error: any) {
-    console.error("Gemini error REAL:", error);
+    console.error("Gemini error FINAL:", error);
     return res.status(500).json({ error: error.message });
   }
 }
