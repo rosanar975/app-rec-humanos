@@ -12,35 +12,32 @@ export default async function handler(
   }
 
   try {
-    // 🔑 API KEY
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return res.status(500).json({ error: "API key no configurada" });
     }
 
-    // 📥 Prompt del usuario
     const { prompt } = req.body;
     if (!prompt) {
       return res.status(400).json({ error: "Prompt requerido" });
     }
 
-    // 📄import path from "path";
-import fs from "fs";
+    // 🔥 RUTA CORRECTA PARA VERCEL
+    const systemPath = path.join(process.cwd(), "prompts", "system.txt");
 
-const systemPath = path.join(process.cwd(), "prompts", "system.txt");
-const systemPrompt = fs.readFileSync(systemPath, "utf-8");
+    const systemPrompt = fs.readFileSync(systemPath, "utf8");
 
-    // 🤖 Gemini
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
-      systemInstruction: systemInstruction,
     });
 
-    // 🚀 Generar contenido
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const result = await model.generateContent([
+      { role: "system", parts: [{ text: systemPrompt }] },
+      { role: "user", parts: [{ text: prompt }] },
+    ]);
 
+    const text = result.response.text();
     return res.status(200).json({ text });
   } catch (error) {
     console.error("Gemini error:", error);
