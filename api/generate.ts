@@ -1,4 +1,3 @@
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 import path from "path";
@@ -30,19 +29,17 @@ export default async function handler(
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // ✅Using Gemini 1.5 Flash model (supported)
-   const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash-latest",
-   systemInstruction: systemPrompt,
-});
+    const model = genAI.getGenerativeModel({
+      model: "models/gemini-1.5-flash",
+      systemInstruction: systemPrompt,
+    });
 
-
-   const result = await model.generateContent(prompt);
-const text = result.response.text();
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
 
     return res.status(200).json({ text });
   } catch (error: any) {
-    console.error("Gemini error FINAL:", error);
+    console.error("Gemini error:", error);
     return res.status(500).json({ error: error.message });
   }
 }
