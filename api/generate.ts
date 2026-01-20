@@ -24,9 +24,11 @@ export default async function handler(
       return res.status(400).json({ error: "Prompt requerido" });
     }
 
-    // 📄 Leer system.txt
-    const systemPath = path.join(process.cwd(), "prompts", "system.txt");
-    const systemInstruction = fs.readFileSync(systemPath, "utf-8");
+    // 📄import path from "path";
+import fs from "fs";
+
+const systemPath = path.join(process.cwd(), "prompts", "system.txt");
+const systemPrompt = fs.readFileSync(systemPath, "utf-8");
 
     // 🤖 Gemini
     const genAI = new GoogleGenerativeAI(apiKey);
