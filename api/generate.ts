@@ -29,10 +29,10 @@ export default async function handler(
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // ✅Using Gemini 1.5 Flash model
+    // ✅Using Gemini 1.5 Flash model (supported)
    const model = genAI.getGenerativeModel({
-  model: "gemini-1.5-flash",
-  systemInstruction: systemPrompt,
+  model: "gemini-1.5-flash-latest",
+   systemInstruction: systemPrompt,
 });
 
 
