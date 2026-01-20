@@ -1,0 +1,5 @@
+{
+  "name": "Recursos Humanos App",
+  "description": "Una aplicación para gestionar empleados de la empresa, rastrear su estado, asistencia y realizar acciones de RRHH. Incluye una herramienta con IA para resumir documentos y generar informes de audio.",
+  "requestFramePermissions": []
+}
