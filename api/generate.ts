@@ -29,14 +29,15 @@ export default async function handler(
 
     const genAI = new GoogleGenerativeAI(apiKey);
 
-    // ✅ MODELO QUE SÍ EXISTE EN v1beta
-    const model = genAI.getGenerativeModel({
-      model: "models/gemini-1.0-pro",
-      systemInstruction: systemPrompt,
-    });
+    // ✅Using Gemini 1.5 Flash model
+   const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+  systemInstruction: systemPrompt,
+});
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+
+   const result = await model.generateContent(prompt);
+const text = result.response.text();
 
     return res.status(200).json({ text });
   } catch (error: any) {
