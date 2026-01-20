@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import type { VercelRequest, VercelResponse } from "@vercel/node";
 import fs from "fs";
 import path from "path";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 export default async function handler(
   req: VercelRequest,
@@ -14,7 +14,7 @@ export default async function handler(
   try {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({ error: "API key no configurada" });
+      throw new Error("GEMINI_API_KEY no configurada");
     }
 
     const { prompt } = req.body;
@@ -22,25 +22,27 @@ export default async function handler(
       return res.status(400).json({ error: "Prompt requerido" });
     }
 
-    // 🔥 RUTA CORRECTA PARA VERCEL
-    const systemPath = path.join(process.cwd(), "prompts", "system.txt");
-
-    const systemPrompt = fs.readFileSync(systemPath, "utf8");
+    // ✅ leer system prompt
+    const systemPrompt = fs.readFileSync(
+      path.join(process.cwd(), "prompts", "system.txt"),
+      "utf-8"
+    );
 
     const genAI = new GoogleGenerativeAI(apiKey);
+
+    // ✅ modelo correcto
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
+      systemInstruction: systemPrompt,
     });
 
-    const result = await model.generateContent([
-      { role: "system", parts: [{ text: systemPrompt }] },
-      { role: "user", parts: [{ text: prompt }] },
-    ]);
-
+    // ✅ SOLO texto plano
+    const result = await model.generateContent(prompt);
     const text = result.response.text();
+
     return res.status(200).json({ text });
-  } catch (error) {
-    console.error("Gemini error:", error);
-    return res.status(500).json({ error: "Error generando contenido" });
+  } catch (error: any) {
+    console.error("Gemini error REAL:", error);
+    return res.status(500).json({ error: error.message });
   }
 }
