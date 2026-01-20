@@ -1,12 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 import path from "path";
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { IncomingMessage, ServerResponse } from "http";
+
 
 export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
+  req: IncomingMessage & { body?: any; method?: string },
+  res: ServerResponse & { status: (code: number) => any; json: (data: any) => any }
 ) {
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método no permitido" });
   }
